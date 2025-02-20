@@ -1,0 +1,21 @@
+[gd_scene load_steps=4 format=3 uid="uid://5aqimhe4epkc"]
+
+[ext_resource type="Script" path="res://scripts/data.gd" id="1_26qi4"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_uifpl"]
+
+[sub_resource type="CanvasTexture" id="CanvasTexture_axflb"]
+
+[node name="Data" type="Node2D"]
+script = ExtResource("1_26qi4")
+
+[node name="Area2D" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+shape = SubResource("RectangleShape2D_uifpl")
+
+[node name="Sprite2D" type="Sprite2D" parent="Area2D"]
+scale = Vector2(20, 20)
+texture = SubResource("CanvasTexture_axflb")
+
+[connection signal="input_event" from="Area2D" to="." method="_on_area_2d_input_event"]
