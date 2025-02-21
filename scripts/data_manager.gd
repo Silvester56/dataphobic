@@ -1,14 +1,18 @@
 extends Node2D
 @export var Data: PackedScene
 
-var dataHandlingCapacity = 1
+var dataHandlingCapacity: int = 16
 var dataSearchingTime = 3
 var currentlySearching = false
 
 func retrieveData():
 	print("Searching data")
-	for i in range(0, dataHandlingCapacity):
-		add_child(Data.instantiate())
+	var tmpData
+	for i in range(0, sqrt(dataHandlingCapacity)):
+		for j in range(0, sqrt(dataHandlingCapacity)):
+			tmpData = Data.instantiate()
+			tmpData.setPostion(position.x + j * 30, position.y + i * 30)
+			add_child(tmpData)
 	currentlySearching = false
 
 func _ready() -> void:
