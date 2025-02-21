@@ -19,6 +19,7 @@ func retrieveData():
 
 func _on_data_erased() -> void:
 	dataRemaining = dataRemaining - 1
+	get_parent().increaseTotalDataErased()
 
 func _ready() -> void:
 	retrieveData()
