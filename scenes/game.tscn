@@ -14,6 +14,14 @@ position = Vector2(100, 100)
 script = ExtResource("1_84yyt")
 Data = ExtResource("3_tiuk5")
 
+[node name="DataSearchingTimer" type="Timer" parent="DataManager"]
+
+[node name="DataSearchingTimerLabel" type="Label" parent="DataManager"]
+visible = false
+offset_right = 40.0
+offset_bottom = 23.0
+text = "Placeholder"
+
 [node name="Background" type="Sprite2D" parent="."]
 texture = ExtResource("2_tty7l")
 centered = false
@@ -22,3 +30,5 @@ centered = false
 offset_right = 40.0
 offset_bottom = 23.0
 text = "Total data erased : 0 bytes"
+
+[connection signal="timeout" from="DataManager/DataSearchingTimer" to="DataManager" method="_on_data_searching_timer_timeout"]

@@ -16,16 +16,24 @@ func retrieveData():
 			add_child(tmpData)
 	dataRemaining = dataHandlingCapacity
 	currentlySearching = false
+	$DataSearchingTimerLabel.visible = false
 
 func _on_data_erased() -> void:
 	dataRemaining = dataRemaining - 1
 	get_parent().increaseTotalDataErased()
 
 func _ready() -> void:
+	$DataSearchingTimer.wait_time = dataSearchingTime
 	retrieveData()
 
 func _process(delta: float) -> void:
 	if dataRemaining == 0 and !currentlySearching:
 		currentlySearching = true
-		await get_tree().create_timer(dataSearchingTime).timeout
-		retrieveData()
+		$DataSearchingTimer.start()
+		$DataSearchingTimerLabel.visible = true
+	if currentlySearching:
+		$DataSearchingTimerLabel.text = str(ceil($DataSearchingTimer.time_left))
+
+func _on_data_searching_timer_timeout() -> void:
+	$DataSearchingTimer.stop()
+	retrieveData()
