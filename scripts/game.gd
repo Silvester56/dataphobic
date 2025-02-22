@@ -9,3 +9,6 @@ func increaseTotalDataErased() -> void:
 
 func increaseGridSize(newSize: int) -> void:
 	$DataManager.dataHandlingCapacity = newSize
+
+func speedUpFetching() -> void:
+	$DataManager.dataFetchingTime = $DataManager.dataFetchingTime - 0.5

@@ -3,7 +3,7 @@ extends Node2D
 
 var dataHandlingCapacity: int = 1
 var dataRemaining: int = 1
-var dataSearchingTime = 3
+var dataFetchingTime: float = 5
 var currentlySearching = false
 
 func retrieveData():
@@ -18,6 +18,7 @@ func retrieveData():
 	dataRemaining = dataHandlingCapacity
 	currentlySearching = false
 	$DataSearchingTimerLabel.visible = false
+	$DataSearchingTimer.wait_time = dataFetchingTime
 
 func _on_data_erased(event) -> void:
 	dataRemaining = dataRemaining - 1
@@ -26,7 +27,7 @@ func _on_data_erased(event) -> void:
 	get_parent().increaseTotalDataErased()
 
 func _ready() -> void:
-	$DataSearchingTimer.wait_time = dataSearchingTime
+	$DataSearchingTimer.wait_time = dataFetchingTime
 	retrieveData()
 
 func roundingTime(time: float) -> String:
