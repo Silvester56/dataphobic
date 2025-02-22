@@ -1,0 +1,6 @@
+[gd_resource type="LabelSettings" load_steps=2 format=3 uid="uid://xghivu23iu3a"]
+
+[ext_resource type="FontFile" uid="uid://bsfi2hegw1npa" path="res://assets/SpaceMono-Bold.ttf" id="1_vtd74"]
+
+[resource]
+font = ExtResource("1_vtd74")
