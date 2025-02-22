@@ -27,7 +27,7 @@ Eraserbot = ExtResource("2_hvwcs")
 
 [node name="DataManager" type="Node2D" parent="."]
 z_index = 1
-position = Vector2(512, 364)
+position = Vector2(512, 384)
 script = ExtResource("1_84yyt")
 Data = ExtResource("3_tiuk5")
 
