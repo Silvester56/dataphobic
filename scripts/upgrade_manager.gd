@@ -9,7 +9,8 @@ enum upgradeId {
 	GRID_25,
 	GRID_36,
 	GRID_64,
-	FETCH_FASTER
+	FETCH_FASTER,
+	AUTO_CLICK
 }
 
 func createUpgrade(buttonText, labelText, identifier):
@@ -22,10 +23,14 @@ func handleDataErased(totalDataErased) -> void:
 	if totalDataErased == 4:
 		add_child(createUpgrade("2x2 grid", "Fetch 4 data blocks at once", upgradeId.GRID_4))
 	if totalDataErased == 32:
-		add_child(createUpgrade("Faster", "Fetch data blocks slightly faster", upgradeId.FETCH_FASTER))
+		add_child(createUpgrade("Anti-lag", "Fetch data blocks slightly faster", upgradeId.FETCH_FASTER))
+	if totalDataErased == 48:
+		add_child(createUpgrade("Eraserbot", "Autoclick on random data blocks", upgradeId.AUTO_CLICK))
 
 func _on_upgrade_purchased(upgradeIdentifier) -> void:
 	if upgradeIdentifier == upgradeId.GRID_4:
 		get_parent().increaseGridSize(4)
 	if upgradeIdentifier == upgradeId.FETCH_FASTER:
 		get_parent().speedUpFetching()
+	if upgradeIdentifier == upgradeId.AUTO_CLICK:
+		get_parent().addEraserbot()

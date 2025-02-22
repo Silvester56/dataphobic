@@ -13,11 +13,16 @@ func _process(delta: float) -> void:
 	elif spriteOpacityPercentage == 100:
 		spriteOpacityPercentageDelta = -2
 	$Area2D/Sprite2D.self_modulate.a = spriteOpacityPercentage / 100
-	
+
+func deleteSelf(newPosition) -> void:
+	if newPosition == null:
+		newPosition = global_position + Vector2(scale.x / 2, scale.y / 2)
+	emit_signal("data_erased", newPosition)
+	queue_free()
+
 func _on_area_2d_input_event(viewport: Node, event: InputEvent, shape_idx: int) -> void:
 	if event is InputEventMouseButton:
-		emit_signal("data_erased", event)
-		queue_free()
+		deleteSelf(event.position)
 
 func setPostionAndScale(x: int, y: int, s: int) -> void:
 	scale.x = s

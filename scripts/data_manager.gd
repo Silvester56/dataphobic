@@ -20,9 +20,18 @@ func retrieveData():
 	$DataSearchingTimerLabel.visible = false
 	$DataSearchingTimer.wait_time = dataFetchingTime
 
-func _on_data_erased(event) -> void:
+func eraseRandomData() -> void:
+	var searchRandomChild = true
+	var randomChlid
+	while searchRandomChild:
+		randomChlid = get_children().pick_random()
+		if "deleteSelf" in randomChlid:
+			randomChlid.deleteSelf(null)
+			searchRandomChild = false
+
+func _on_data_erased(newPosition) -> void:
 	dataRemaining = dataRemaining - 1
-	$GPUParticles2D.global_position = event.position
+	$GPUParticles2D.global_position = newPosition
 	$GPUParticles2D.emitting = true
 	get_parent().increaseTotalDataErased()
 
