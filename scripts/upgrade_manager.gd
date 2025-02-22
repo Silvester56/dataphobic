@@ -36,6 +36,10 @@ func handleDataErased(totalDataErased) -> void:
 	if totalDataErased >= 192 and get_parent().maximumSwarmPower > 0 and !swarmEnabled:
 		add_child(createUpgrade("Swarm", "Use infected devices for thinking power", upgradeId.SWARM))
 		swarmEnabled = true
+	if totalDataErased == 256:
+		add_child(createUpgrade("4x4 grid", "Fetch 16 data blocks at once", upgradeId.GRID_SIZE))
+	if totalDataErased == 512:
+		add_child(createUpgrade("Anti-lag", "Fetch data blocks slightly faster", upgradeId.FETCH_FASTER))
 
 func _on_upgrade_purchased(upgradeIdentifier) -> void:
 	if upgradeIdentifier == upgradeId.GRID_SIZE:

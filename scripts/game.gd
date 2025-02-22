@@ -11,7 +11,8 @@ var percentageOfDevicesInfectedUnits = 0
 var percentageOfDevicesInfectedDecimals = 1
 var maximumSwarmPower = 0
 var availableSwarmPower = 0
-var swarmPowerThresholds = [10, 50, 100, 200, 500, 1000, 5000, 10000, 50000, 100000]
+var devicesInfectedDecimalsThresholds = [10, 20, 50, 100, 150, 300, 500, 1000, 5000, 10000, 50000, 100000, 500000]
+var devicesInfectedUnitsThresholds = [1, 2, 5, 10, 15, 30, 50, 100]
 
 func _process(delta: float) -> void:
 	for i in len(eraserbotArray):
@@ -55,10 +56,16 @@ func turnOnSwarm() -> void:
 
 func _on_self_replication_timer_timeout() -> void:
 	percentageOfDevicesInfectedDecimals = percentageOfDevicesInfectedDecimals + 1
-	if percentageOfDevicesInfectedDecimals >= swarmPowerThresholds[0]:
-		swarmPowerThresholds.pop_front()
+	if len(devicesInfectedDecimalsThresholds) > 0 and percentageOfDevicesInfectedDecimals >= devicesInfectedDecimalsThresholds[0]:
+		devicesInfectedDecimalsThresholds.pop_front()
 		maximumSwarmPower = maximumSwarmPower + 10
 		availableSwarmPower = availableSwarmPower + 10
+		updateSwarmLabelAndButtons()
+	if len(devicesInfectedUnitsThresholds) > 0 and percentageOfDevicesInfectedUnits >= devicesInfectedUnitsThresholds[0]:
+		devicesInfectedUnitsThresholds.pop_front()
+		maximumSwarmPower = maximumSwarmPower + 10
+		availableSwarmPower = availableSwarmPower + 10
+		updateSwarmLabelAndButtons()
 	if percentageOfDevicesInfectedDecimals >= 1000000:
 		percentageOfDevicesInfectedUnits = percentageOfDevicesInfectedUnits + 1
 		percentageOfDevicesInfectedDecimals = 0
@@ -66,7 +73,7 @@ func _on_self_replication_timer_timeout() -> void:
 
 func updateSwarmLabelAndButtons() -> void:
 	$Swarm/EraserBotIncrease.disabled = availableSwarmPower == 0
-	$Swarm/SelfReplicationIncrease.disabled = availableSwarmPower == 0
+	$Swarm/SelfReplicationIncrease.disabled = availableSwarmPower == 0 || selfReplicationSpeed == 50
 	$Swarm/EraserBotDecrease.disabled = eraserbotSpeed == 0
 	$Swarm/SelfReplicationDecrease.disabled = selfReplicationSpeed == 0
 	$Swarm/AvailablePower.text = "Available swarm power : " + str(availableSwarmPower) + "/" + str(maximumSwarmPower)
@@ -95,6 +102,6 @@ func _on_self_replication_decrease_pressed() -> void:
 func _on_self_replication_increase_pressed() -> void:
 	availableSwarmPower = availableSwarmPower - 1
 	selfReplicationSpeed = selfReplicationSpeed + 1
-	$SelfReplicationTimer.wait_time = 10 - selfReplicationSpeed / 2
+	$SelfReplicationTimer.wait_time = 10.1 - selfReplicationSpeed / 5
 	$Swarm/SelfReplicationDecrease.disabled = false
 	updateSwarmLabelAndButtons()
