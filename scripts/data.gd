@@ -21,7 +21,7 @@ func deleteSelf(newPosition) -> void:
 	queue_free()
 
 func _on_area_2d_input_event(viewport: Node, event: InputEvent, shape_idx: int) -> void:
-	if event is InputEventMouseButton:
+	if event is InputEventMouseButton and event.pressed and event.button_index == 1:
 		deleteSelf(event.position)
 
 func setPostionAndScale(x: int, y: int, s: int) -> void:
@@ -29,7 +29,6 @@ func setPostionAndScale(x: int, y: int, s: int) -> void:
 	scale.y = s
 	position.x = x
 	position.y = y
-
 
 func _on_area_2d_mouse_entered() -> void:
 	blinking = true
@@ -39,4 +38,3 @@ func _on_area_2d_mouse_exited() -> void:
 	spriteOpacityPercentage = 100
 	spriteOpacityPercentageDelta = -2
 	$Area2D/Sprite2D.self_modulate.a = 1
-	
