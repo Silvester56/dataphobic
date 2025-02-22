@@ -64,6 +64,73 @@ position = Vector2(10, 100)
 script = ExtResource("4_kh1r3")
 Upgrade = ExtResource("5_d5ues")
 
+[node name="Swarm" type="Control" parent="."]
+visible = false
+z_index = 1
+layout_mode = 3
+anchors_preset = 0
+offset_left = 717.0
+offset_top = 475.0
+offset_right = 757.0
+offset_bottom = 515.0
+
+[node name="AvailablePower" type="Label" parent="Swarm"]
+layout_mode = 0
+offset_right = 255.0
+offset_bottom = 24.0
+text = "Available swarm power : 10"
+label_settings = ExtResource("9_7lyuh")
+
+[node name="EraserbotSpeed" type="Label" parent="Swarm"]
+offset_left = 3.0
+offset_top = 45.0
+offset_right = 190.0
+offset_bottom = 69.0
+text = "Eraserbot speed : 0"
+label_settings = ExtResource("9_7lyuh")
+
+[node name="EraserBotDecrease" type="Button" parent="Swarm"]
+layout_mode = 0
+offset_left = 198.0
+offset_top = 43.0
+offset_right = 216.0
+offset_bottom = 74.0
+disabled = true
+text = "-"
+
+[node name="EraserBotIncrease" type="Button" parent="Swarm"]
+layout_mode = 0
+offset_left = 221.0
+offset_top = 43.0
+offset_right = 239.0
+offset_bottom = 74.0
+text = "+"
+
+[node name="SelfReplicationSpeed" type="Label" parent="Swarm"]
+offset_left = 5.0
+offset_top = 82.0
+offset_right = 260.0
+offset_bottom = 106.0
+text = "Self replication speed : 0"
+label_settings = ExtResource("9_7lyuh")
+
+[node name="SelfReplicationDecrease" type="Button" parent="Swarm"]
+layout_mode = 0
+offset_left = 263.0
+offset_top = 80.0
+offset_right = 281.0
+offset_bottom = 111.0
+disabled = true
+text = "-"
+
+[node name="SelfReplicationIncrease" type="Button" parent="Swarm"]
+layout_mode = 0
+offset_left = 286.0
+offset_top = 81.0
+offset_right = 304.0
+offset_bottom = 112.0
+text = "+"
+
 [node name="Background" type="Sprite2D" parent="."]
 texture = ExtResource("2_tty7l")
 centered = false
@@ -89,4 +156,8 @@ label_settings = ExtResource("9_7lyuh")
 wait_time = 10.0
 
 [connection signal="timeout" from="DataManager/DataSearchingTimer" to="DataManager" method="_on_data_searching_timer_timeout"]
+[connection signal="pressed" from="Swarm/EraserBotDecrease" to="." method="_on_eraser_bot_decrease_pressed"]
+[connection signal="pressed" from="Swarm/EraserBotIncrease" to="." method="_on_eraser_bot_increase_pressed"]
+[connection signal="pressed" from="Swarm/SelfReplicationDecrease" to="." method="_on_self_replication_decrease_pressed"]
+[connection signal="pressed" from="Swarm/SelfReplicationIncrease" to="." method="_on_self_replication_increase_pressed"]
 [connection signal="timeout" from="SelfReplicationTimer" to="." method="_on_self_replication_timer_timeout"]

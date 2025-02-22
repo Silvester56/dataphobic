@@ -3,8 +3,8 @@ extends Node2D
 
 var dataHandlingCapacity: int = 1
 var dataRemaining: int = 1
-var dataFetchingTime: float = 5
-var currentlySearching = false
+var dataFetchingTime: float = 3
+var displayDataSearchingTimer = false
 
 func retrieveData():
 	var tmpData
@@ -16,7 +16,7 @@ func retrieveData():
 			tmpData.setPostionAndScale(j * squareSize - 180, i * squareSize - 180, squareSize)
 			add_child(tmpData)
 	dataRemaining = dataHandlingCapacity
-	currentlySearching = false
+	displayDataSearchingTimer = false
 	$DataSearchingTimerLabel.visible = false
 	$DataSearchingTimer.wait_time = dataFetchingTime
 
@@ -31,6 +31,13 @@ func eraseRandomData() -> void:
 
 func _on_data_erased(newPosition) -> void:
 	dataRemaining = dataRemaining - 1
+	if dataRemaining == 0:
+		if dataFetchingTime > 0:
+			displayDataSearchingTimer = true
+			$DataSearchingTimer.start()
+			$DataSearchingTimerLabel.visible = true
+		else:
+			retrieveData()
 	$GPUParticles2D.global_position = newPosition
 	$GPUParticles2D.emitting = true
 	get_parent().increaseTotalDataErased()
@@ -46,11 +53,7 @@ func roundingTime(time: float) -> String:
 	return result
 
 func _process(delta: float) -> void:
-	if dataRemaining == 0 and !currentlySearching:
-		currentlySearching = true
-		$DataSearchingTimer.start()
-		$DataSearchingTimerLabel.visible = true
-	if currentlySearching:
+	if dataFetchingTime > 0 and displayDataSearchingTimer:
 		$DataSearchingTimerLabel.text = roundingTime($DataSearchingTimer.time_left)
 
 func _on_data_searching_timer_timeout() -> void:
