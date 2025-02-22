@@ -1,16 +1,18 @@
-[gd_scene load_steps=5 format=3 uid="uid://cu88af33byu3a"]
+[gd_scene load_steps=7 format=3 uid="uid://cu88af33byu3a"]
 
 [ext_resource type="Script" path="res://scripts/data_manager.gd" id="1_84yyt"]
 [ext_resource type="Script" path="res://scripts/game.gd" id="1_k6bqu"]
 [ext_resource type="Texture2D" uid="uid://dfdtbux6slmct" path="res://assets/background.png" id="2_tty7l"]
 [ext_resource type="PackedScene" uid="uid://5aqimhe4epkc" path="res://scenes/data.tscn" id="3_tiuk5"]
+[ext_resource type="Script" path="res://scripts/upgrade_manager.gd" id="4_kh1r3"]
+[ext_resource type="PackedScene" uid="uid://cobn4undmh1ci" path="res://scenes/upgrade.tscn" id="5_d5ues"]
 
 [node name="Game" type="Node2D"]
 script = ExtResource("1_k6bqu")
 
 [node name="DataManager" type="Node2D" parent="."]
 z_index = 1
-position = Vector2(100, 100)
+position = Vector2(229, 174)
 script = ExtResource("1_84yyt")
 Data = ExtResource("3_tiuk5")
 
@@ -21,6 +23,12 @@ visible = false
 offset_right = 40.0
 offset_bottom = 23.0
 text = "Placeholder"
+
+[node name="UpgradeManager" type="Node2D" parent="."]
+z_index = 1
+position = Vector2(23, 167)
+script = ExtResource("4_kh1r3")
+Upgrade = ExtResource("5_d5ues")
 
 [node name="Background" type="Sprite2D" parent="."]
 texture = ExtResource("2_tty7l")

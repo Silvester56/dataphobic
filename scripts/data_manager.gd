@@ -13,7 +13,7 @@ func retrieveData():
 		for j in range(0, sqrt(dataHandlingCapacity)):
 			tmpData = Data.instantiate()
 			tmpData.connect("data_erased", _on_data_erased)
-			tmpData.setPostionAndScale(position.x + j * squareSize, position.y + i * squareSize, squareSize)
+			tmpData.setPostionAndScale(j * squareSize, i * squareSize, squareSize)
 			add_child(tmpData)
 	dataRemaining = dataHandlingCapacity
 	currentlySearching = false
