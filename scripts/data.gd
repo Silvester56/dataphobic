@@ -7,6 +7,8 @@ func _on_area_2d_input_event(viewport: Node, event: InputEvent, shape_idx: int) 
 		emit_signal("data_erased")
 		queue_free()
 
-func setPostion(x: int, y: int) -> void:
+func setPostionAndScale(x: int, y: int, s: int) -> void:
+	scale.x = s
+	scale.y = s
 	position.x = x
 	position.y = y

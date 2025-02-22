@@ -1,18 +1,19 @@
 extends Node2D
 @export var Data: PackedScene
 
-var dataHandlingCapacity: int = 16
+var dataHandlingCapacity: int = 1
 var dataRemaining: int = 1
 var dataSearchingTime = 3
 var currentlySearching = false
 
 func retrieveData():
 	var tmpData
+	var squareSize = 360 / sqrt(dataHandlingCapacity)
 	for i in range(0, sqrt(dataHandlingCapacity)):
 		for j in range(0, sqrt(dataHandlingCapacity)):
 			tmpData = Data.instantiate()
 			tmpData.connect("data_erased", _on_data_erased)
-			tmpData.setPostion(position.x + j * 30, position.y + i * 30)
+			tmpData.setPostionAndScale(position.x + j * squareSize, position.y + i * squareSize, squareSize)
 			add_child(tmpData)
 	dataRemaining = dataHandlingCapacity
 	currentlySearching = false
