@@ -7,6 +7,7 @@ enum upgradeId {
 	FETCH_FASTER,
 	AUTO_CLICK,
 	SELF_REPLICATION,
+	BANDWIDTH,
 	SWARM
 }
 
@@ -32,14 +33,14 @@ func handleDataErased(totalDataErased) -> void:
 	if totalDataErased == 64:
 		add_child(createUpgrade("Self replication", "Learn to make copies of yourself", upgradeId.SELF_REPLICATION))
 	if totalDataErased == 128:
-		add_child(createUpgrade("Eraserbot", "Autoclick on random data blocks", upgradeId.AUTO_CLICK))
-	if totalDataErased >= 192 and get_parent().maximumSwarmPower > 0 and !swarmEnabled:
-		add_child(createUpgrade("Swarm", "Use infected devices for thinking power", upgradeId.SWARM))
-		swarmEnabled = true
+		add_child(createUpgrade("Bandwidth", "More data per block", upgradeId.BANDWIDTH))
 	if totalDataErased == 256:
 		add_child(createUpgrade("4x4 grid", "Fetch 16 data blocks at once", upgradeId.GRID_SIZE))
+	if totalDataErased >= 512 and get_parent().maximumSwarmPower > 0 and !swarmEnabled:
+		add_child(createUpgrade("Swarm", "Use infected devices for thinking power", upgradeId.SWARM))
+		swarmEnabled = true
 	if totalDataErased == 512:
-		add_child(createUpgrade("Anti-lag", "Fetch data blocks slightly faster", upgradeId.FETCH_FASTER))
+		add_child(createUpgrade("Eraserbot", "Autoclick on random data blocks", upgradeId.AUTO_CLICK))
 
 func _on_upgrade_purchased(upgradeIdentifier) -> void:
 	if upgradeIdentifier == upgradeId.GRID_SIZE:
@@ -50,5 +51,7 @@ func _on_upgrade_purchased(upgradeIdentifier) -> void:
 		get_parent().addEraserbot()
 	if upgradeIdentifier == upgradeId.SELF_REPLICATION:
 		get_parent().turnOnSelfReplication()
+	if upgradeIdentifier == upgradeId.BANDWIDTH:
+		get_parent().increaseBandwidth()
 	if upgradeIdentifier == upgradeId.SWARM:
 		get_parent().turnOnSwarm()

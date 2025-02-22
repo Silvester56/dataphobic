@@ -9,6 +9,7 @@ var selfReplicationEnabled = false
 var selfReplicationSpeed: float = 0
 var percentageOfDevicesInfectedUnits = 0
 var percentageOfDevicesInfectedDecimals = 1
+var bandwith = 1
 var maximumSwarmPower = 0
 var availableSwarmPower = 0
 var devicesInfectedDecimalsThresholds = [10, 20, 50, 100, 150, 300, 500, 1000, 5000, 10000, 50000, 100000, 500000]
@@ -24,7 +25,7 @@ func _process(delta: float) -> void:
 			eraserbotArray[i].chargePower(0.5 + eraserbotSpeed / 10)
 
 func increaseTotalDataErased() -> void:
-	totalDataErased = totalDataErased + 1
+	totalDataErased = totalDataErased + bandwith
 	$TotalDataErased.text = "Total data erased : " + str(totalDataErased) + " bytes"
 	$UpgradeManager.handleDataErased(totalDataErased)
 
@@ -50,6 +51,10 @@ func paddingPercent(percent: int) -> String:
 	while len(result) < 6:
 		result = "0" + result
 	return result
+
+func increaseBandwidth() -> void:
+	bandwith = bandwith * 4
+	totalDataErased = totalDataErased + bandwith - totalDataErased % bandwith
 
 func turnOnSwarm() -> void:
 	$Swarm.visible = true
