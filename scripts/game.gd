@@ -5,6 +5,9 @@ extends Node2D
 var totalDataErased: int = 0
 var eraserbotArray: Array = []
 var chargingCapacity: float = 0.25
+var selfReplicationEnabled = false
+var percentageOfDevicesInfectedUnits = 0
+var percentageOfDevicesInfectedDecimals = 1
 
 func _process(delta: float) -> void:
 	for i in len(eraserbotArray):
@@ -32,3 +35,20 @@ func addEraserbot() -> void:
 	newBot.position.y = 100 + len(eraserbotArray) * 80
 	eraserbotArray.push_back(newBot)
 	add_child(newBot)
+
+func turnOnSelfReplication() -> void:
+	$PercentageOfDevicesInfected.visible = true
+	$SelfReplicationTimer.start()
+
+func paddingPercent(percent: int) -> String:
+	var result = str(percent)
+	while len(result) < 6:
+		result = "0" + result
+	return result
+
+func _on_self_replication_timer_timeout() -> void:
+	percentageOfDevicesInfectedDecimals = percentageOfDevicesInfectedDecimals + 1
+	if percentageOfDevicesInfectedDecimals >= 1000000:
+		percentageOfDevicesInfectedUnits = percentageOfDevicesInfectedUnits + 1
+		percentageOfDevicesInfectedDecimals = 0
+	$PercentageOfDevicesInfected.text = "Percentage of devices infected : " + str(percentageOfDevicesInfectedUnits) + "." + paddingPercent(percentageOfDevicesInfectedDecimals) + "%"

@@ -40,7 +40,7 @@ func _ready() -> void:
 	retrieveData()
 
 func roundingTime(time: float) -> String:
-	var result = str(snapped($DataSearchingTimer.time_left, 0.1))
+	var result = str(snapped(time, 0.1))
 	if len(result) == 1:
 		result = result + ".0"
 	return result

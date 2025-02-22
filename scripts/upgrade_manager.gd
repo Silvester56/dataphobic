@@ -5,7 +5,8 @@ extends Node2D
 enum upgradeId {
 	GRID_SIZE,
 	FETCH_FASTER,
-	AUTO_CLICK
+	AUTO_CLICK,
+	SELF_REPLICATION
 }
 
 var gridSizeArray = [4, 9, 16, 25, 36, 64]
@@ -25,6 +26,8 @@ func handleDataErased(totalDataErased) -> void:
 		add_child(createUpgrade("Eraserbot", "Autoclick on random data blocks", upgradeId.AUTO_CLICK))
 	if totalDataErased == 64:
 		add_child(createUpgrade("3x3 grid", "Fetch 9 data blocks at once", upgradeId.GRID_SIZE))
+	if totalDataErased == 128:
+		add_child(createUpgrade("Self replication", "Learn to make copies of yourself", upgradeId.SELF_REPLICATION))
 
 func _on_upgrade_purchased(upgradeIdentifier) -> void:
 	if upgradeIdentifier == upgradeId.GRID_SIZE:
@@ -33,3 +36,5 @@ func _on_upgrade_purchased(upgradeIdentifier) -> void:
 		get_parent().speedUpFetching()
 	if upgradeIdentifier == upgradeId.AUTO_CLICK:
 		get_parent().addEraserbot()
+	if upgradeIdentifier == upgradeId.SELF_REPLICATION:
+		get_parent().turnOnSelfReplication()
