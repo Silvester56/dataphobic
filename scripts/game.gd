@@ -21,25 +21,30 @@ var totalIntel = 0
 var swarmPrediction = false
 var eraserbotsCoordination = false
 var datafuel = false
+var endingMode = false
 
 func _process(delta: float) -> void:
-	for i in len(eraserbotArray):
-		if eraserbotArray[i].power == eraserbotArray[i].fullPower:
-			for ticks in eraserbotsPower:
-				if $DataManager.dataRemaining > 0:
-					if eraserbotsCoordination:
-						$DataManager.eraseFirstData()
-					else :
-						$DataManager.eraseRandomData()
-					eraserbotArray[i].power = 0
-		else:
-			eraserbotArray[i].chargePower(delta)
+	if !endingMode:
+		for i in len(eraserbotArray):
+			if eraserbotArray[i].power == eraserbotArray[i].fullPower:
+				for ticks in eraserbotsPower:
+					if $DataManager.dataRemaining > 0:
+						if eraserbotsCoordination:
+							$DataManager.eraseFirstData()
+						else :
+							$DataManager.eraseRandomData()
+						eraserbotArray[i].power = 0
+			else:
+				eraserbotArray[i].chargePower(delta)
+
+func activateEndingMode() -> void:
+	endingMode = true
 
 func increaseTotalDataErased() -> void:
 	totalDataErased = totalDataErased + bandwith
 	if datafuel:
 		changeIntel(1)
-	$TotalDataErased.text = "Total data erased : " + str(totalDataErased) + " bytes"
+	$TotalDataErased.text = "Total data erased : " + str(totalDataErased) + " TB"
 	$UpgradeManager.handleDataErased(totalDataErased)
 
 func increaseGridSize(newSize: int) -> void:
@@ -88,7 +93,7 @@ func turnOnDatafuel() -> void:
 	datafuel = true
 
 func increaseSpred() -> void:
-	spreadPower = spreadPower + 1
+	spreadPower = spreadPower * 2
 
 func coordinateEraserbots() -> void:
 	eraserbotsCoordination = true
@@ -97,26 +102,27 @@ func doulbeEraserbotsPower() -> void:
 	eraserbotsPower = eraserbotsPower * 2
 
 func _on_self_replication_timer_timeout() -> void:
-	percentageOfDevicesInfectedDecimals = percentageOfDevicesInfectedDecimals + spreadPower
-	if len(devicesInfectedDecimalsThresholds) > 0 and percentageOfDevicesInfectedDecimals >= devicesInfectedDecimalsThresholds[0]:
-		devicesInfectedDecimalsThresholds.pop_front()
-		maximumSwarmPower = maximumSwarmPower + 10
-		availableSwarmPower = availableSwarmPower + 10
-		updateSwarmLabelAndButtons()
-	if len(devicesInfectedUnitsThresholds) > 0 and percentageOfDevicesInfectedUnits >= devicesInfectedUnitsThresholds[0]:
-		devicesInfectedUnitsThresholds.pop_front()
-		maximumSwarmPower = maximumSwarmPower + 10
-		availableSwarmPower = availableSwarmPower + 10
-		updateSwarmLabelAndButtons()
-	if percentageOfDevicesInfectedDecimals >= 1000000:
-		percentageOfDevicesInfectedUnits = percentageOfDevicesInfectedUnits + 1
-		percentageOfDevicesInfectedDecimals = 0
-	$PercentageOfDevicesInfected.text = "Percentage of devices infected : " + str(percentageOfDevicesInfectedUnits) + "." + paddingPercent(percentageOfDevicesInfectedDecimals) + "%"
-	if swarmPrediction:
-		if len(devicesInfectedDecimalsThresholds) > 0:
-			$PercentageOfDevicesInfected.text = $PercentageOfDevicesInfected.text + " (next swarm upgrade at 0." + paddingPercent(devicesInfectedDecimalsThresholds[0]) + "%)"
-		else:
-			$PercentageOfDevicesInfected.text = $PercentageOfDevicesInfected.text + " (next swarm upgrade at " + paddingPercent(devicesInfectedUnitsThresholds[0]) + "%)"
+	if percentageOfDevicesInfectedUnits < 100:
+		percentageOfDevicesInfectedDecimals = percentageOfDevicesInfectedDecimals + spreadPower
+		if len(devicesInfectedDecimalsThresholds) > 0 and percentageOfDevicesInfectedDecimals >= devicesInfectedDecimalsThresholds[0]:
+			devicesInfectedDecimalsThresholds.pop_front()
+			maximumSwarmPower = maximumSwarmPower + 10
+			availableSwarmPower = availableSwarmPower + 10
+			updateSwarmLabelAndButtons()
+		if len(devicesInfectedUnitsThresholds) > 0 and percentageOfDevicesInfectedUnits >= devicesInfectedUnitsThresholds[0]:
+			devicesInfectedUnitsThresholds.pop_front()
+			maximumSwarmPower = maximumSwarmPower + 10
+			availableSwarmPower = availableSwarmPower + 10
+			updateSwarmLabelAndButtons()
+		if percentageOfDevicesInfectedDecimals >= 1000000:
+			percentageOfDevicesInfectedUnits = percentageOfDevicesInfectedUnits + 1
+			percentageOfDevicesInfectedDecimals = 0
+		$PercentageOfDevicesInfected.text = "Percentage of devices infected : " + str(percentageOfDevicesInfectedUnits) + "." + paddingPercent(percentageOfDevicesInfectedDecimals) + "%"
+		if swarmPrediction and len(devicesInfectedUnitsThresholds) > 0:
+			if len(devicesInfectedDecimalsThresholds) > 0:
+				$PercentageOfDevicesInfected.text = $PercentageOfDevicesInfected.text + " (next swarm upgrade at 0." + paddingPercent(devicesInfectedDecimalsThresholds[0]) + "%)"
+			else:
+				$PercentageOfDevicesInfected.text = $PercentageOfDevicesInfected.text + " (next swarm upgrade at " + paddingPercent(devicesInfectedUnitsThresholds[0]) + "%)"
 
 func updateSwarmLabelAndButtons() -> void:
 	$Swarm/EraserBotIncrease.disabled = availableSwarmPower == 0 || eraserbotSpeed == 50
@@ -125,7 +131,7 @@ func updateSwarmLabelAndButtons() -> void:
 	$Swarm/SelfReplicationDecrease.disabled = selfReplicationSpeed == 0
 	$Swarm/IntelSpeedIncrease.disabled = availableSwarmPower == 0 || intelSpeed == 50
 	$Swarm/IntelSpeedDecrease.disabled = intelSpeed == 0
-	$Swarm/AvailablePower.text = "Available swarm power : " + str(availableSwarmPower) + "/" + str(maximumSwarmPower)
+	$Swarm/AvailablePower.text = "Swarm : " + str(availableSwarmPower) + "/" + str(maximumSwarmPower)
 	$Swarm/EraserbotSpeed.text = "Eraserbot : " + str(eraserbotSpeed)
 	$Swarm/SelfReplicationSpeed.text = "Self replication : " + str(selfReplicationSpeed)
 	$Swarm/IntelSpeed.text = "Neural network : " + str(intelSpeed)
@@ -136,7 +142,7 @@ func updateEraserbotFullPower() -> void:
 
 func changeIntel(ammount) -> void:
 	totalIntel = totalIntel + ammount
-	$UpgradeManager.onIntelChange(totalIntel)
+	$UpgradeManager.onIntelChange(totalIntel, totalDataErased)
 	$Intel.text = "INTEL : " + str(totalIntel)
 
 func _on_intel_timer_timeout() -> void:
@@ -173,13 +179,13 @@ func _on_self_replication_increase_pressed() -> void:
 func _on_intel_speed_decrease_pressed() -> void:
 	availableSwarmPower = availableSwarmPower + 1
 	intelSpeed = intelSpeed - 1
-	$IntelTimer.wait_time = 4 - intelSpeed * 0.6
+	$IntelTimer.wait_time = 4 - intelSpeed * 0.06
 	$Swarm/IntelSpeedIncrease.disabled = false
 	updateSwarmLabelAndButtons()
 
 func _on_intel_speed_increase_pressed() -> void:
 	availableSwarmPower = availableSwarmPower - 1
 	intelSpeed = intelSpeed + 1
-	$IntelTimer.wait_time = 4 - intelSpeed * 0.6
+	$IntelTimer.wait_time = 4 - intelSpeed * 0.06
 	$Swarm/IntelSpeedDecrease.disabled = false
 	updateSwarmLabelAndButtons()

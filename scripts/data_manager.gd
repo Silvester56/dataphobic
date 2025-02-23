@@ -18,7 +18,8 @@ func retrieveData():
 	dataRemaining = dataHandlingCapacity
 	displayDataSearchingTimer = false
 	$DataSearchingTimerLabel.visible = false
-	$DataSearchingTimer.wait_time = dataFetchingTime
+	if dataFetchingTime > 0:
+		$DataSearchingTimer.wait_time = dataFetchingTime
 
 func eraseRandomData() -> void:
 	var searchRandomChild = true

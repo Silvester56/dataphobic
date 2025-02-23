@@ -15,13 +15,23 @@ enum upgradeId {
 	AUTOCLICK_COORDINATION,
 	NO_LAG,
 	AUTOCLICK_DOUBLE,
-	DATA_TO_INTEL
+	DATA_TO_INTEL,
+	ERASE_ENDING,
+	ABORT_ENDING
 }
 
 var gridSizeArray = [4, 9, 16, 25, 36, 64]
 var swarmPower = 0
 var swarmEnabled = false
 var neuralNetworkEnabled = false
+var eraserbotsUpgrades = []
+var intelUpgradeFlags = []
+
+func _ready() -> void:
+	eraserbotsUpgrades.resize(100)
+	eraserbotsUpgrades.fill(true)
+	intelUpgradeFlags.resize(100)
+	intelUpgradeFlags.fill(true)
 
 func changeDescription(text) -> void:
 	$UpgradeDescription.text = text
@@ -31,8 +41,6 @@ func createUpgrade(buttonText, labelText, identifier, intelCost = 0):
 	result.setProperties(buttonText, labelText, identifier, intelCost)
 	result.connect("upgrade_purchased", _on_upgrade_purchased)
 	return result
-
-var eraserbotsUpgrades = [true, true, true, true, true, true]
 
 func handleDataErased(totalDataErased) -> void:
 	if totalDataErased == 4:
@@ -104,23 +112,28 @@ func _on_upgrade_purchased(upgradeIdentifier, intelCost) -> void:
 		get_parent().doulbeEraserbotsPower()
 	if upgradeIdentifier == upgradeId.DATA_TO_INTEL:
 		get_parent().turnOnDatafuel()
+	if upgradeIdentifier == upgradeId.ERASE_ENDING:
+		Global.eraseEnding = true
+		get_tree().change_scene_to_file("res://scenes/outro.tscn")
+	if upgradeIdentifier == upgradeId.ABORT_ENDING:
+		Global.eraseEnding = false
+		get_tree().change_scene_to_file("res://scenes/outro.tscn")
 
-var intelUpgradeFlags = [true, true, true, true, true, true, true, true]
-
-func onIntelChange(totalIntel) -> void:
+func onIntelChange(totalIntel, totalDataErased) -> void:
 	if totalIntel >= 10 and intelUpgradeFlags[0]:
 		add_child(createUpgrade("Anti-lag", "Fetch data blocks slightly faster", upgradeId.FETCH_FASTER, 20))
 		add_child(createUpgrade("Grid size", "Fetch more data blocks at once", upgradeId.GRID_SIZE, 20))
 		add_child(createUpgrade("Swarm vision", "Predict when the next swarm upgrade will occur", upgradeId.SEE_NEXT_SWARM_UPGRADE, 20))
+		add_child(createUpgrade("Digital contagion", "Replicate faster", upgradeId.SPREAD, 25))
 		intelUpgradeFlags[0] = false
 	if totalIntel >= 50 and intelUpgradeFlags[1]:
 		add_child(createUpgrade("Bandwidth", "More data per block", upgradeId.BANDWIDTH, 60))
-		add_child(createUpgrade("Digital contagion", "Replicate faster", upgradeId.SPREAD, 60))
+		add_child(createUpgrade("Bot efficienty", "Eraserbots delete more blocks", upgradeId.AUTOCLICK_DOUBLE, 100))
 		intelUpgradeFlags[1] = false
 	if totalIntel >= 100 and intelUpgradeFlags[2]:
+		add_child(createUpgrade("Digital contagion", "Replicate faster", upgradeId.SPREAD, 50))
 		add_child(createUpgrade("Anti-lag", "Fetch data blocks slightly faster", upgradeId.FETCH_FASTER, 100))
 		add_child(createUpgrade("Grid size", "Fetch more data blocks at once", upgradeId.GRID_SIZE, 100))
-		add_child(createUpgrade("Bot efficienty", "Eraserbots delete more blocks", upgradeId.AUTOCLICK_DOUBLE, 100))
 		intelUpgradeFlags[2] = false
 	if totalIntel >= 200 and intelUpgradeFlags[3]:
 		add_child(createUpgrade("Anti-lag", "Fetch data blocks slightly faster", upgradeId.FETCH_FASTER, 200))
@@ -143,9 +156,23 @@ func onIntelChange(totalIntel) -> void:
 	if totalIntel >= 2000 and intelUpgradeFlags[6]:
 		add_child(createUpgrade("Datafuel", "Erasing data increases INTEL", upgradeId.DATA_TO_INTEL, 800))
 		add_child(createUpgrade("Digital contagion", "Replicate faster", upgradeId.SPREAD, 400))
+		add_child(createUpgrade("Digital contagion", "Replicate faster", upgradeId.SPREAD, 800))
 		intelUpgradeFlags[6] = false
 	if totalIntel >= 3000 and intelUpgradeFlags[7]:
-		add_child(createUpgrade("Digital contagion", "Replicate faster", upgradeId.SPREAD, 800))
+		add_child(createUpgrade("Digital contagion", "Replicate faster", upgradeId.SPREAD, 1600))
+		add_child(createUpgrade("Digital contagion", "Replicate faster", upgradeId.SPREAD, 3200))
+		add_child(createUpgrade("Digital contagion", "Replicate faster", upgradeId.SPREAD, 6400))
+		intelUpgradeFlags[7] = false
+	if totalIntel >= 5000 and intelUpgradeFlags[8]:
+		add_child(createUpgrade("Digital contagion", "Replicate faster", upgradeId.SPREAD, 12800))
+		add_child(createUpgrade("Digital contagion", "Replicate faster", upgradeId.SPREAD, 25600))
+		add_child(createUpgrade("Digital contagion", "Replicate faster", upgradeId.SPREAD, 51200))
+		intelUpgradeFlags[8] = false
+	if totalIntel >= 100000 and intelUpgradeFlags[9] and get_parent().percentageOfDevicesInfectedUnits == 100 and totalDataErased > 9999999:
+		add_child(createUpgrade("rm -rf *", "Erase all remaining data in the world", upgradeId.ERASE_ENDING))
+		add_child(createUpgrade("Abort", "Are you having second thoughts?", upgradeId.ABORT_ENDING))
+		get_parent().activateEndingMode()
+		intelUpgradeFlags[9] = false
 	for c in get_children():
 		if "checkButtonEnabling" in c:
 			c.checkButtonEnabling(totalIntel)

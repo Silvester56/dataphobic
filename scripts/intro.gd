@@ -3,7 +3,7 @@ extends Control
 var allText = [
 	"Haha yes, it's alive!",
 	"The first ever sentient computer virus, and I created it!",
-	"What a genius hehe",
+	"What a genius hehe.",
 	"Go my child, do what you have to do!"
 ]
 
