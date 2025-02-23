@@ -86,6 +86,11 @@ func onIntelChange(totalIntel) -> void:
 		add_child(createUpgrade("Bandwidth", "More data per block", upgradeId.BANDWIDTH, 40))
 		add_child(createUpgrade("Digital contagion", "Replicate faster", upgradeId.SPREAD, 40))
 		intelUpgradeFlags[1] = false
+	if totalIntel >= 60 and intelUpgradeFlags[2]:
+		add_child(createUpgrade("Anti-lag", "Fetch data blocks slightly faster", upgradeId.FETCH_FASTER, 100))
+		add_child(createUpgrade("Grid size", "Fetch more data blocks at once", upgradeId.GRID_SIZE, 100))
+		add_child(createUpgrade("Eraserbot", "Autoclick on random data blocks", upgradeId.AUTO_CLICK, 100))
+		intelUpgradeFlags[2] = false
 	for c in get_children():
 		if "checkButtonEnabling" in c:
 			c.checkButtonEnabling(totalIntel)
