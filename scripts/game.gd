@@ -9,6 +9,7 @@ var selfReplicationEnabled = false
 var selfReplicationSpeed: float = 0
 var percentageOfDevicesInfectedUnits = 0
 var percentageOfDevicesInfectedDecimals = 1
+var spreadPower = 1
 var bandwith = 1
 var maximumSwarmPower = 0
 var availableSwarmPower = 0
@@ -68,8 +69,11 @@ func turnOnNeuralNetwork() -> void:
 func turnOnSwarmPrediction() -> void:
 	swarmPrediction = true
 
+func increaseSpred() -> void:
+	spreadPower = spreadPower + 1
+
 func _on_self_replication_timer_timeout() -> void:
-	percentageOfDevicesInfectedDecimals = percentageOfDevicesInfectedDecimals + 1
+	percentageOfDevicesInfectedDecimals = percentageOfDevicesInfectedDecimals + spreadPower
 	if len(devicesInfectedDecimalsThresholds) > 0 and percentageOfDevicesInfectedDecimals >= devicesInfectedDecimalsThresholds[0]:
 		devicesInfectedDecimalsThresholds.pop_front()
 		maximumSwarmPower = maximumSwarmPower + 10
