@@ -19,12 +19,12 @@ var swarmPrediction = false
 
 func _process(delta: float) -> void:
 	for i in len(eraserbotArray):
-		if eraserbotArray[i].power == 100:
+		if eraserbotArray[i].power == eraserbotArray[i].fullPower:
 			if $DataManager.dataRemaining > 0:
 				$DataManager.eraseRandomData()
 				eraserbotArray[i].power = 0
 		else:
-			eraserbotArray[i].chargePower(0.5 + eraserbotSpeed / 10)
+			eraserbotArray[i].chargePower(delta)
 
 func increaseTotalDataErased() -> void:
 	totalDataErased = totalDataErased + bandwith
@@ -91,7 +91,7 @@ func _on_self_replication_timer_timeout() -> void:
 			$PercentageOfDevicesInfected.text = $PercentageOfDevicesInfected.text + " (next swarm upgrade at " + paddingPercent(devicesInfectedUnitsThresholds[0]) + "%)"
 
 func updateSwarmLabelAndButtons() -> void:
-	$Swarm/EraserBotIncrease.disabled = availableSwarmPower == 0
+	$Swarm/EraserBotIncrease.disabled = availableSwarmPower == 0 || eraserbotSpeed == 50
 	$Swarm/SelfReplicationIncrease.disabled = availableSwarmPower == 0 || selfReplicationSpeed == 50
 	$Swarm/EraserBotDecrease.disabled = eraserbotSpeed == 0
 	$Swarm/SelfReplicationDecrease.disabled = selfReplicationSpeed == 0
@@ -99,15 +99,21 @@ func updateSwarmLabelAndButtons() -> void:
 	$Swarm/EraserbotSpeed.text = "Eraserbot boost : " + str(eraserbotSpeed)
 	$Swarm/SelfReplicationSpeed.text = "Self replication boost : " + str(selfReplicationSpeed)
 
+func updateEraserbotFullPower() -> void:
+	for i in len(eraserbotArray):
+		eraserbotArray[i].fullPower = 5.1 - eraserbotSpeed / 10
+
 func _on_eraser_bot_decrease_pressed() -> void:
 	availableSwarmPower = availableSwarmPower + 1
 	eraserbotSpeed = eraserbotSpeed - 1
+	updateEraserbotFullPower()
 	$Swarm/EraserBotIncrease.disabled = false
 	updateSwarmLabelAndButtons()
 
 func _on_eraser_bot_increase_pressed() -> void:
 	availableSwarmPower = availableSwarmPower - 1
 	eraserbotSpeed = eraserbotSpeed + 1
+	updateEraserbotFullPower()
 	$Swarm/EraserBotDecrease.disabled = false
 	updateSwarmLabelAndButtons()
 
