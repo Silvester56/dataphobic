@@ -106,6 +106,24 @@ text = "-"
 layout_mode = 2
 text = "+"
 
+[node name="IntelSpeed" type="Label" parent="Swarm"]
+visible = false
+layout_mode = 2
+text = "Neural network speed : 0"
+label_settings = ExtResource("9_7lyuh")
+
+[node name="IntelSpeedDecrease" type="Button" parent="Swarm"]
+visible = false
+layout_mode = 2
+theme_override_fonts/font = ExtResource("4_xlhqx")
+text = "-"
+
+[node name="IntelSpeedIncrease" type="Button" parent="Swarm"]
+visible = false
+layout_mode = 2
+theme_override_fonts/font = ExtResource("4_xlhqx")
+text = "+"
+
 [node name="Background" type="Sprite2D" parent="."]
 texture = ExtResource("2_tty7l")
 centered = false
@@ -154,12 +172,14 @@ label_settings = ExtResource("9_7lyuh")
 wait_time = 10.0
 
 [node name="IntelTimer" type="Timer" parent="."]
-wait_time = 3.0
+wait_time = 3.1
 
 [connection signal="timeout" from="DataManager/DataSearchingTimer" to="DataManager" method="_on_data_searching_timer_timeout"]
 [connection signal="pressed" from="Swarm/EraserBotDecrease" to="." method="_on_eraser_bot_decrease_pressed"]
 [connection signal="pressed" from="Swarm/EraserBotIncrease" to="." method="_on_eraser_bot_increase_pressed"]
 [connection signal="pressed" from="Swarm/SelfReplicationDecrease" to="." method="_on_self_replication_decrease_pressed"]
 [connection signal="pressed" from="Swarm/SelfReplicationIncrease" to="." method="_on_self_replication_increase_pressed"]
+[connection signal="pressed" from="Swarm/IntelSpeedDecrease" to="." method="_on_intel_speed_decrease_pressed"]
+[connection signal="pressed" from="Swarm/IntelSpeedIncrease" to="." method="_on_intel_speed_increase_pressed"]
 [connection signal="timeout" from="SelfReplicationTimer" to="." method="_on_self_replication_timer_timeout"]
 [connection signal="timeout" from="IntelTimer" to="." method="_on_intel_timer_timeout"]

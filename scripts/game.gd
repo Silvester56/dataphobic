@@ -7,6 +7,7 @@ var eraserbotArray: Array = []
 var eraserbotSpeed: float = 0
 var selfReplicationEnabled = false
 var selfReplicationSpeed: float = 0
+var intelSpeed: float = 0
 var percentageOfDevicesInfectedUnits = 0
 var percentageOfDevicesInfectedDecimals = 1
 var spreadPower = 1
@@ -69,6 +70,9 @@ func turnOnSwarm() -> void:
 func turnOnNeuralNetwork() -> void:
 	$IntelTimer.start()
 	$Intel.visible = true
+	$Swarm/IntelSpeedIncrease.visible = true
+	$Swarm/IntelSpeedDecrease.visible = true
+	$Swarm/IntelSpeed.visible = true
 
 func turnOnSwarmPrediction() -> void:
 	swarmPrediction = true
@@ -103,16 +107,27 @@ func _on_self_replication_timer_timeout() -> void:
 
 func updateSwarmLabelAndButtons() -> void:
 	$Swarm/EraserBotIncrease.disabled = availableSwarmPower == 0 || eraserbotSpeed == 50
-	$Swarm/SelfReplicationIncrease.disabled = availableSwarmPower == 0 || selfReplicationSpeed == 50
 	$Swarm/EraserBotDecrease.disabled = eraserbotSpeed == 0
+	$Swarm/SelfReplicationIncrease.disabled = availableSwarmPower == 0 || selfReplicationSpeed == 50
 	$Swarm/SelfReplicationDecrease.disabled = selfReplicationSpeed == 0
+	$Swarm/IntelSpeedIncrease.disabled = availableSwarmPower == 0 || intelSpeed == 50
+	$Swarm/IntelSpeedDecrease.disabled = intelSpeed == 0
 	$Swarm/AvailablePower.text = "Available swarm power : " + str(availableSwarmPower) + "/" + str(maximumSwarmPower)
-	$Swarm/EraserbotSpeed.text = "Eraserbot boost : " + str(eraserbotSpeed)
-	$Swarm/SelfReplicationSpeed.text = "Self replication boost : " + str(selfReplicationSpeed)
+	$Swarm/EraserbotSpeed.text = "Eraserbot : " + str(eraserbotSpeed)
+	$Swarm/SelfReplicationSpeed.text = "Self replication : " + str(selfReplicationSpeed)
+	$Swarm/IntelSpeed.text = "Neural network : " + str(intelSpeed)
 
 func updateEraserbotFullPower() -> void:
 	for i in len(eraserbotArray):
 		eraserbotArray[i].fullPower = 5.1 - eraserbotSpeed / 10
+
+func changeIntel(ammount) -> void:
+	totalIntel = totalIntel + ammount
+	$UpgradeManager.onIntelChange(totalIntel)
+	$Intel.text = "INTEL : " + str(totalIntel)
+
+func _on_intel_timer_timeout() -> void:
+	changeIntel(1)
 
 func _on_eraser_bot_decrease_pressed() -> void:
 	availableSwarmPower = availableSwarmPower + 1
@@ -131,7 +146,7 @@ func _on_eraser_bot_increase_pressed() -> void:
 func _on_self_replication_decrease_pressed() -> void:
 	availableSwarmPower = availableSwarmPower + 1
 	selfReplicationSpeed = selfReplicationSpeed - 1
-	$SelfReplicationTimer.wait_time = 10 - selfReplicationSpeed
+	$SelfReplicationTimer.wait_time = 10.1 - selfReplicationSpeed / 5
 	$Swarm/SelfReplicationIncrease.disabled = false
 	updateSwarmLabelAndButtons()
 
@@ -142,10 +157,16 @@ func _on_self_replication_increase_pressed() -> void:
 	$Swarm/SelfReplicationDecrease.disabled = false
 	updateSwarmLabelAndButtons()
 
-func changeIntel(ammount) -> void:
-	totalIntel = totalIntel + ammount
-	$UpgradeManager.onIntelChange(totalIntel)
-	$Intel.text = "INTEL : " + str(totalIntel)
+func _on_intel_speed_decrease_pressed() -> void:
+	availableSwarmPower = availableSwarmPower + 1
+	intelSpeed = intelSpeed - 1
+	$IntelTimer.wait_time = 3.1 - intelSpeed * 0.6
+	$Swarm/IntelSpeedIncrease.disabled = false
+	updateSwarmLabelAndButtons()
 
-func _on_intel_timer_timeout() -> void:
-	changeIntel(1)
+func _on_intel_speed_increase_pressed() -> void:
+	availableSwarmPower = availableSwarmPower - 1
+	intelSpeed = intelSpeed + 1
+	$SelfReplicationTimer.wait_time = 3.1 - intelSpeed * 0.6
+	$Swarm/IntelSpeedDecrease.disabled = false
+	updateSwarmLabelAndButtons()

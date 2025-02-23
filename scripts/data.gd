@@ -4,6 +4,7 @@ signal data_erased
 var spriteOpacityPercentage: float = 100
 var spriteOpacityPercentageDelta: float = -2
 var blinking = false
+var marked = false
 
 func _process(delta: float) -> void:
 	if blinking:

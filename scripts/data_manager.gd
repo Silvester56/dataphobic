@@ -25,7 +25,8 @@ func eraseRandomData() -> void:
 	var randomChlid
 	while searchRandomChild:
 		randomChlid = get_children().pick_random()
-		if "deleteSelf" in randomChlid:
+		if "deleteSelf" in randomChlid and !randomChlid.marked:
+			randomChlid.marked = true
 			randomChlid.deleteSelf(null)
 			searchRandomChild = false
 
@@ -35,7 +36,8 @@ func eraseFirstData() -> void:
 	var firstChild
 	while index >= 0:
 		firstChild = get_children()[index]
-		if "deleteSelf" in firstChild:
+		if "deleteSelf" in firstChild and !firstChild.marked:
+			firstChild.marked = true
 			firstChild.deleteSelf(null)
 			index = -1
 		else:
