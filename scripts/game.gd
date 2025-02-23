@@ -5,48 +5,55 @@ extends Node2D
 var totalDataErased: int = 0
 var eraserbotArray: Array = []
 var eraserbotSpeed: float = 0
+var eraserbotsPower: int = 1
 var selfReplicationEnabled = false
 var selfReplicationSpeed: float = 0
 var intelSpeed: float = 0
 var percentageOfDevicesInfectedUnits = 0
 var percentageOfDevicesInfectedDecimals = 1
 var spreadPower = 1
-var bandwith = 4
+var bandwith = 1
 var maximumSwarmPower = 0
 var availableSwarmPower = 0
-var devicesInfectedDecimalsThresholds = [10, 20, 50, 100, 150, 300, 500, 1000, 5000, 10000, 50000, 100000, 500000]
-var devicesInfectedUnitsThresholds = [1, 2, 5, 10, 15, 30, 50, 100]
+var devicesInfectedDecimalsThresholds = [10, 20, 50, 100, 200, 500, 1000, 10000, 100000]
+var devicesInfectedUnitsThresholds = [1, 2, 5, 10, 30, 50]
 var totalIntel = 0
 var swarmPrediction = false
-var eraserbotsCoordination = true
+var eraserbotsCoordination = false
+var datafuel = false
 
 func _process(delta: float) -> void:
 	for i in len(eraserbotArray):
 		if eraserbotArray[i].power == eraserbotArray[i].fullPower:
-			if $DataManager.dataRemaining > 0:
-				if eraserbotsCoordination:
-					$DataManager.eraseFirstData()
-				else :
-					$DataManager.eraseRandomData()
-				eraserbotArray[i].power = 0
+			for ticks in eraserbotsPower:
+				if $DataManager.dataRemaining > 0:
+					if eraserbotsCoordination:
+						$DataManager.eraseFirstData()
+					else :
+						$DataManager.eraseRandomData()
+					eraserbotArray[i].power = 0
 		else:
 			eraserbotArray[i].chargePower(delta)
 
 func increaseTotalDataErased() -> void:
 	totalDataErased = totalDataErased + bandwith
+	if datafuel:
+		changeIntel(1)
 	$TotalDataErased.text = "Total data erased : " + str(totalDataErased) + " bytes"
 	$UpgradeManager.handleDataErased(totalDataErased)
 
 func increaseGridSize(newSize: int) -> void:
 	$DataManager.dataHandlingCapacity = newSize
 
-func speedUpFetching() -> void:
+func speedUpFetching(nolag: bool) -> void:
 	$DataManager.dataFetchingTime = $DataManager.dataFetchingTime - 0.5
+	if nolag:
+		$DataManager.dataFetchingTime = 0
 
 func addEraserbot() -> void:
 	var newBot = Eraserbot.instantiate()
-	newBot.position.x = 900
-	newBot.position.y = 100 + len(eraserbotArray) * 80
+	newBot.position.x = 800 + (len(eraserbotArray) % 2) * 100
+	newBot.position.y = 100 + (len(eraserbotArray) / 2) * 80
 	eraserbotArray.push_back(newBot)
 	add_child(newBot)
 
@@ -77,11 +84,17 @@ func turnOnNeuralNetwork() -> void:
 func turnOnSwarmPrediction() -> void:
 	swarmPrediction = true
 
+func turnOnDatafuel() -> void:
+	datafuel = true
+
 func increaseSpred() -> void:
 	spreadPower = spreadPower + 1
 
 func coordinateEraserbots() -> void:
 	eraserbotsCoordination = true
+
+func doulbeEraserbotsPower() -> void:
+	eraserbotsPower = eraserbotsPower * 2
 
 func _on_self_replication_timer_timeout() -> void:
 	percentageOfDevicesInfectedDecimals = percentageOfDevicesInfectedDecimals + spreadPower
@@ -160,13 +173,13 @@ func _on_self_replication_increase_pressed() -> void:
 func _on_intel_speed_decrease_pressed() -> void:
 	availableSwarmPower = availableSwarmPower + 1
 	intelSpeed = intelSpeed - 1
-	$IntelTimer.wait_time = 3.1 - intelSpeed * 0.6
+	$IntelTimer.wait_time = 4 - intelSpeed * 0.6
 	$Swarm/IntelSpeedIncrease.disabled = false
 	updateSwarmLabelAndButtons()
 
 func _on_intel_speed_increase_pressed() -> void:
 	availableSwarmPower = availableSwarmPower - 1
 	intelSpeed = intelSpeed + 1
-	$SelfReplicationTimer.wait_time = 3.1 - intelSpeed * 0.6
+	$IntelTimer.wait_time = 4 - intelSpeed * 0.6
 	$Swarm/IntelSpeedDecrease.disabled = false
 	updateSwarmLabelAndButtons()
