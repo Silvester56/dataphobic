@@ -9,6 +9,7 @@ anchors_preset = 0
 script = ExtResource("1_mrkfo")
 
 [node name="Button" type="Button" parent="."]
+layout_mode = 0
 offset_right = 8.0
 offset_bottom = 8.0
 theme_override_fonts/font = ExtResource("2_6l7dt")

@@ -10,19 +10,23 @@ var selfReplicationSpeed: float = 0
 var percentageOfDevicesInfectedUnits = 0
 var percentageOfDevicesInfectedDecimals = 1
 var spreadPower = 1
-var bandwith = 1
+var bandwith = 4
 var maximumSwarmPower = 0
 var availableSwarmPower = 0
 var devicesInfectedDecimalsThresholds = [10, 20, 50, 100, 150, 300, 500, 1000, 5000, 10000, 50000, 100000, 500000]
 var devicesInfectedUnitsThresholds = [1, 2, 5, 10, 15, 30, 50, 100]
 var totalIntel = 0
 var swarmPrediction = false
+var eraserbotsCoordination = true
 
 func _process(delta: float) -> void:
 	for i in len(eraserbotArray):
 		if eraserbotArray[i].power == eraserbotArray[i].fullPower:
 			if $DataManager.dataRemaining > 0:
-				$DataManager.eraseRandomData()
+				if eraserbotsCoordination:
+					$DataManager.eraseFirstData()
+				else :
+					$DataManager.eraseRandomData()
 				eraserbotArray[i].power = 0
 		else:
 			eraserbotArray[i].chargePower(delta)
@@ -71,6 +75,9 @@ func turnOnSwarmPrediction() -> void:
 
 func increaseSpred() -> void:
 	spreadPower = spreadPower + 1
+
+func coordinateEraserbots() -> void:
+	eraserbotsCoordination = true
 
 func _on_self_replication_timer_timeout() -> void:
 	percentageOfDevicesInfectedDecimals = percentageOfDevicesInfectedDecimals + spreadPower

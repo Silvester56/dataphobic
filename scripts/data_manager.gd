@@ -29,6 +29,18 @@ func eraseRandomData() -> void:
 			randomChlid.deleteSelf(null)
 			searchRandomChild = false
 
+func eraseFirstData() -> void:
+	var searchFirstChild = true
+	var index = 0
+	var firstChild
+	while index >= 0:
+		firstChild = get_children()[index]
+		if "deleteSelf" in firstChild:
+			firstChild.deleteSelf(null)
+			index = -1
+		else:
+			index = index + 1
+
 func _on_data_erased(newPosition) -> void:
 	dataRemaining = dataRemaining - 1
 	if dataRemaining == 0:
