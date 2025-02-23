@@ -9,7 +9,8 @@ enum upgradeId {
 	SELF_REPLICATION,
 	BANDWIDTH,
 	SWARM,
-	NEURAL_NETWORK
+	NEURAL_NETWORK,
+	SEE_NEXT_SWARM_UPGRADE
 }
 
 var gridSizeArray = [4, 9, 16, 25, 36, 64]
@@ -41,12 +42,12 @@ func handleDataErased(totalDataErased) -> void:
 		add_child(createUpgrade("Bandwidth", "More data per block", upgradeId.BANDWIDTH))
 	if totalDataErased == 256:
 		add_child(createUpgrade("Grid size", "Fetch more data blocks at once", upgradeId.GRID_SIZE))
-	if totalDataErased >= 256 and get_parent().maximumSwarmPower > 0 and !swarmEnabled:
+	if totalDataErased >= 256 and get_parent().maximumSwarmPower >= 10 and !swarmEnabled:
 		add_child(createUpgrade("Swarm", "Use infected devices for thinking power", upgradeId.SWARM))
 		swarmEnabled = true
 	if totalDataErased == 512:
 		add_child(createUpgrade("Eraserbot", "Autoclick on random data blocks", upgradeId.AUTO_CLICK))
-	if totalDataErased >= 1024 and get_parent().maximumSwarmPower > 20 and !neuralNetworkEnabled:
+	if totalDataErased >= 1024 and get_parent().maximumSwarmPower >= 20 and !neuralNetworkEnabled:
 		add_child(createUpgrade("Neural network", "Gather intelligence for future upgrades", upgradeId.NEURAL_NETWORK))
 		neuralNetworkEnabled = true
 
@@ -66,6 +67,8 @@ func _on_upgrade_purchased(upgradeIdentifier, intelCost) -> void:
 		get_parent().turnOnSwarm()
 	if upgradeIdentifier == upgradeId.NEURAL_NETWORK:
 		get_parent().turnOnNeuralNetwork()
+	if upgradeIdentifier == upgradeId.SEE_NEXT_SWARM_UPGRADE:
+		get_parent().turnOnSwarmPrediction()
 
 var intelUpgradeFlags = [true, true, true]
 
@@ -73,6 +76,7 @@ func onIntelChange(totalIntel) -> void:
 	if totalIntel >= 10 and intelUpgradeFlags[0]:
 		add_child(createUpgrade("Anti-lag", "Fetch data blocks slightly faster", upgradeId.FETCH_FASTER, 20))
 		add_child(createUpgrade("Grid size", "Fetch more data blocks at once", upgradeId.GRID_SIZE, 20))
+		add_child(createUpgrade("Swarm vision", "Predict when the next swarm upgrade will occur", upgradeId.SEE_NEXT_SWARM_UPGRADE, 20))
 		intelUpgradeFlags[0] = false
 	for c in get_children():
 		if "checkButtonEnabling" in c:

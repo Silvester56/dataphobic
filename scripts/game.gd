@@ -15,6 +15,7 @@ var availableSwarmPower = 0
 var devicesInfectedDecimalsThresholds = [10, 20, 50, 100, 150, 300, 500, 1000, 5000, 10000, 50000, 100000, 500000]
 var devicesInfectedUnitsThresholds = [1, 2, 5, 10, 15, 30, 50, 100]
 var totalIntel = 0
+var swarmPrediction = false
 
 func _process(delta: float) -> void:
 	for i in len(eraserbotArray):
@@ -64,6 +65,9 @@ func turnOnNeuralNetwork() -> void:
 	$IntelTimer.start()
 	$Intel.visible = true
 
+func turnOnSwarmPrediction() -> void:
+	swarmPrediction = true
+
 func _on_self_replication_timer_timeout() -> void:
 	percentageOfDevicesInfectedDecimals = percentageOfDevicesInfectedDecimals + 1
 	if len(devicesInfectedDecimalsThresholds) > 0 and percentageOfDevicesInfectedDecimals >= devicesInfectedDecimalsThresholds[0]:
@@ -80,6 +84,11 @@ func _on_self_replication_timer_timeout() -> void:
 		percentageOfDevicesInfectedUnits = percentageOfDevicesInfectedUnits + 1
 		percentageOfDevicesInfectedDecimals = 0
 	$PercentageOfDevicesInfected.text = "Percentage of devices infected : " + str(percentageOfDevicesInfectedUnits) + "." + paddingPercent(percentageOfDevicesInfectedDecimals) + "%"
+	if swarmPrediction:
+		if len(devicesInfectedDecimalsThresholds) > 0:
+			$PercentageOfDevicesInfected.text = $PercentageOfDevicesInfected.text + " (next swarm upgrade at 0." + paddingPercent(devicesInfectedDecimalsThresholds[0]) + "%)"
+		else:
+			$PercentageOfDevicesInfected.text = $PercentageOfDevicesInfected.text + " (next swarm upgrade at " + paddingPercent(devicesInfectedUnitsThresholds[0]) + "%)"
 
 func updateSwarmLabelAndButtons() -> void:
 	$Swarm/EraserBotIncrease.disabled = availableSwarmPower == 0
