@@ -1,4 +1,4 @@
-extends Node2D
+extends VBoxContainer
 
 @export var Upgrade: PackedScene
 
@@ -8,41 +8,50 @@ enum upgradeId {
 	AUTO_CLICK,
 	SELF_REPLICATION,
 	BANDWIDTH,
-	SWARM
+	SWARM,
+	NEURAL_NETWORK
 }
 
 var gridSizeArray = [4, 9, 16, 25, 36, 64]
 var swarmPower = 0
 var swarmEnabled = false
+var neuralNetworkEnabled = false
 
-func createUpgrade(buttonText, labelText, identifier):
+func changeDescription(text) -> void:
+	$UpgradeDescription.text = text
+
+func createUpgrade(buttonText, labelText, identifier, intelCost = 0):
 	var result = Upgrade.instantiate()
-	result.setProperties(buttonText, labelText, identifier)
+	result.setProperties(buttonText, labelText, identifier, intelCost)
 	result.connect("upgrade_purchased", _on_upgrade_purchased)
 	return result
 
 func handleDataErased(totalDataErased) -> void:
 	if totalDataErased == 4:
-		add_child(createUpgrade("2x2 grid", "Fetch 4 data blocks at once", upgradeId.GRID_SIZE))
+		add_child(createUpgrade("Grid size", "Fetch more data blocks at once", upgradeId.GRID_SIZE))
 	if totalDataErased == 16:
 		add_child(createUpgrade("Anti-lag", "Fetch data blocks slightly faster", upgradeId.FETCH_FASTER))
 	if totalDataErased == 32:
 		add_child(createUpgrade("Eraserbot", "Autoclick on random data blocks", upgradeId.AUTO_CLICK))
 	if totalDataErased == 48:
-		add_child(createUpgrade("3x3 grid", "Fetch 9 data blocks at once", upgradeId.GRID_SIZE))
+		add_child(createUpgrade("Grid size", "Fetch more data blocks at once", upgradeId.GRID_SIZE))
 	if totalDataErased == 64:
 		add_child(createUpgrade("Self replication", "Learn to make copies of yourself", upgradeId.SELF_REPLICATION))
 	if totalDataErased == 128:
 		add_child(createUpgrade("Bandwidth", "More data per block", upgradeId.BANDWIDTH))
 	if totalDataErased == 256:
-		add_child(createUpgrade("4x4 grid", "Fetch 16 data blocks at once", upgradeId.GRID_SIZE))
-	if totalDataErased >= 512 and get_parent().maximumSwarmPower > 0 and !swarmEnabled:
+		add_child(createUpgrade("Grid size", "Fetch more data blocks at once", upgradeId.GRID_SIZE))
+	if totalDataErased >= 256 and get_parent().maximumSwarmPower > 0 and !swarmEnabled:
 		add_child(createUpgrade("Swarm", "Use infected devices for thinking power", upgradeId.SWARM))
 		swarmEnabled = true
 	if totalDataErased == 512:
 		add_child(createUpgrade("Eraserbot", "Autoclick on random data blocks", upgradeId.AUTO_CLICK))
+	if totalDataErased >= 1024 and get_parent().maximumSwarmPower > 20 and !neuralNetworkEnabled:
+		add_child(createUpgrade("Neural network", "Gather intelligence for future upgrades", upgradeId.NEURAL_NETWORK))
+		neuralNetworkEnabled = true
 
-func _on_upgrade_purchased(upgradeIdentifier) -> void:
+func _on_upgrade_purchased(upgradeIdentifier, intelCost) -> void:
+	get_parent().changeIntel(-intelCost)
 	if upgradeIdentifier == upgradeId.GRID_SIZE:
 		get_parent().increaseGridSize(gridSizeArray.pop_front())
 	if upgradeIdentifier == upgradeId.FETCH_FASTER:
@@ -55,3 +64,16 @@ func _on_upgrade_purchased(upgradeIdentifier) -> void:
 		get_parent().increaseBandwidth()
 	if upgradeIdentifier == upgradeId.SWARM:
 		get_parent().turnOnSwarm()
+	if upgradeIdentifier == upgradeId.NEURAL_NETWORK:
+		get_parent().turnOnNeuralNetwork()
+
+var intelUpgradeFlags = [true, true, true]
+
+func onIntelChange(totalIntel) -> void:
+	if totalIntel >= 10 and intelUpgradeFlags[0]:
+		add_child(createUpgrade("Anti-lag", "Fetch data blocks slightly faster", upgradeId.FETCH_FASTER, 20))
+		add_child(createUpgrade("Grid size", "Fetch more data blocks at once", upgradeId.GRID_SIZE, 20))
+		intelUpgradeFlags[0] = false
+	for c in get_children():
+		if "checkButtonEnabling" in c:
+			c.checkButtonEnabling(totalIntel)

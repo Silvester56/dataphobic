@@ -14,6 +14,7 @@ var maximumSwarmPower = 0
 var availableSwarmPower = 0
 var devicesInfectedDecimalsThresholds = [10, 20, 50, 100, 150, 300, 500, 1000, 5000, 10000, 50000, 100000, 500000]
 var devicesInfectedUnitsThresholds = [1, 2, 5, 10, 15, 30, 50, 100]
+var totalIntel = 0
 
 func _process(delta: float) -> void:
 	for i in len(eraserbotArray):
@@ -58,6 +59,10 @@ func increaseBandwidth() -> void:
 
 func turnOnSwarm() -> void:
 	$Swarm.visible = true
+
+func turnOnNeuralNetwork() -> void:
+	$IntelTimer.start()
+	$Intel.visible = true
 
 func _on_self_replication_timer_timeout() -> void:
 	percentageOfDevicesInfectedDecimals = percentageOfDevicesInfectedDecimals + 1
@@ -110,3 +115,11 @@ func _on_self_replication_increase_pressed() -> void:
 	$SelfReplicationTimer.wait_time = 10.1 - selfReplicationSpeed / 5
 	$Swarm/SelfReplicationDecrease.disabled = false
 	updateSwarmLabelAndButtons()
+
+func changeIntel(ammount) -> void:
+	totalIntel = totalIntel + ammount
+	$UpgradeManager.onIntelChange(totalIntel)
+	$Intel.text = "INTEL : " + str(totalIntel)
+
+func _on_intel_timer_timeout() -> void:
+	changeIntel(1)
