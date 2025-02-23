@@ -123,28 +123,28 @@ func onIntelChange(totalIntel) -> void:
 		add_child(createUpgrade("Bot efficienty", "Eraserbots delete more blocks", upgradeId.AUTOCLICK_DOUBLE, 100))
 		intelUpgradeFlags[2] = false
 	if totalIntel >= 200 and intelUpgradeFlags[3]:
-		add_child(createUpgrade("Anti-lag", "Fetch data blocks slightly faster", upgradeId.FETCH_FASTER, 250))
-		add_child(createUpgrade("Grid size", "Fetch more data blocks at once", upgradeId.GRID_SIZE, 250))
-		add_child(createUpgrade("Bandwidth", "More data per block", upgradeId.BANDWIDTH, 250))
+		add_child(createUpgrade("Anti-lag", "Fetch data blocks slightly faster", upgradeId.FETCH_FASTER, 200))
+		add_child(createUpgrade("Grid size", "Fetch more data blocks at once", upgradeId.GRID_SIZE, 200))
+		add_child(createUpgrade("Bandwidth", "More data per block", upgradeId.BANDWIDTH, 200))
 		add_child(createUpgrade("Bot coordination", "Eraserbots now target the first available block", upgradeId.AUTOCLICK_COORDINATION, 250))
 		intelUpgradeFlags[3] = false
 	if totalIntel >= 500 and intelUpgradeFlags[4]:
 		add_child(createUpgrade("No-lag", "Fetch data instantanly", upgradeId.NO_LAG, 600))
 		add_child(createUpgrade("Bot efficienty", "Eraserbots delete more blocks", upgradeId.AUTOCLICK_DOUBLE, 200))
 		add_child(createUpgrade("Bandwidth", "More data per block", upgradeId.BANDWIDTH, 500))
-		add_child(createUpgrade("Digital contagion", "Replicate faster", upgradeId.SPREAD, 200))
+		add_child(createUpgrade("Digital contagion", "Replicate faster", upgradeId.SPREAD, 100))
 		intelUpgradeFlags[4] = false
-	if totalIntel >= 500 and intelUpgradeFlags[5]:
+	if totalIntel >= 1000 and intelUpgradeFlags[5]:
 		add_child(createUpgrade("No-lag", "Fetch data instantanly", upgradeId.NO_LAG, 600))
-		add_child(createUpgrade("Bot efficienty", "Eraserbots delete more blocks", upgradeId.AUTOCLICK_DOUBLE, 200))
+		add_child(createUpgrade("Bot efficienty", "Eraserbots delete more blocks", upgradeId.AUTOCLICK_DOUBLE, 400))
 		add_child(createUpgrade("Bandwidth", "More data per block", upgradeId.BANDWIDTH, 500))
 		add_child(createUpgrade("Digital contagion", "Replicate faster", upgradeId.SPREAD, 200))
 		intelUpgradeFlags[5] = false
-	if totalIntel >= 1000 and intelUpgradeFlags[6]:
+	if totalIntel >= 2000 and intelUpgradeFlags[6]:
 		add_child(createUpgrade("Datafuel", "Erasing data increases INTEL", upgradeId.DATA_TO_INTEL, 800))
 		add_child(createUpgrade("Digital contagion", "Replicate faster", upgradeId.SPREAD, 400))
 		intelUpgradeFlags[6] = false
-	if totalIntel >= 2000 and intelUpgradeFlags[7]:
+	if totalIntel >= 3000 and intelUpgradeFlags[7]:
 		add_child(createUpgrade("Digital contagion", "Replicate faster", upgradeId.SPREAD, 800))
 	for c in get_children():
 		if "checkButtonEnabling" in c:

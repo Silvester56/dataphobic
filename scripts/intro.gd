@@ -1,4 +1,4 @@
-extends Node2D
+extends Control
 
 var allText = [
 	"Haha yes, it's alive!",
